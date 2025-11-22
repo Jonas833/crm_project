@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <GlobalClickSpark />
+       
 
         
         
@@ -38,3 +38,4 @@ export default function RootLayout({
     </html>
   );
 }
+//  <GlobalClickSpark /> mouse click element 
