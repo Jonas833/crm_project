@@ -1,9 +1,10 @@
 import Particles from '@/components/Particles';
 import GlobalClickSpark from "@/components/GlobalClickSpark";
 import StarBorder from '@/components/StarBorder'
+import Link from 'next/link'
   
  
-export default function Page() {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -41,7 +42,9 @@ export default function Page() {
           borderRadius: "20px"
         }}
       >
-        <input  type="text" placeholder="Username"
+      <h2>Setting up your Company</h2>
+
+        <input  type="text" placeholder="Company Name"
         style={{
           border: "2px solid white",
           padding: "10px",
@@ -60,8 +63,25 @@ export default function Page() {
           background: "black",
           color: "white",
           outline: "none"
+          
         }}
         />
+        <input type="Password" placeholder="confirm Password"
+        style={{
+          border: "2px solid white",
+          padding: "10px",
+          borderRadius: "17px",
+          background: "black",
+          color: "white",
+          outline: "none"
+          
+        }}
+        />
+        <nav>
+            
+
+
+        </nav>
 
         <StarBorder as="button" className="black" color="magenta" speed="5s">
           Login
