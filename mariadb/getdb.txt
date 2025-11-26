@@ -1,0 +1,63 @@
+CREATE TABLE konto (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('user', 'admin', 'owner') NOT NULL DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE company_address (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    street VARCHAR(150),
+    house_number VARCHAR(20),
+    zip VARCHAR(10),
+    city VARCHAR(100)
+);
+
+CREATE TABLE company (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    address_id INT,
+    owner_id INT,
+    FOREIGN KEY (address_id) REFERENCES company_address(id),
+    FOREIGN KEY (owner_id) REFERENCES konto(id)
+);
+
+CREATE TABLE customer ( // anpassen 
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    company_id INT NOT NULL,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(150),
+    address_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (company_id) REFERENCES company(id),
+    FOREIGN KEY (address_id) REFERENCES company_address(id)
+);
+
+CREATE TABLE bill (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    total_value DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customer(id)
+);
+
+CREATE TABLE bill_item (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    bill_id INT NOT NULL,
+    description VARCHAR(255),
+    quantity INT DEFAULT 1,
+    price DECIMAL(10,2),
+    FOREIGN KEY (bill_id) REFERENCES bill(id)
+);
+
+CREATE TABLE termin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    date DATE NOT NULL,
+    note TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customer(id)
+);
