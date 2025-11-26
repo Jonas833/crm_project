@@ -1,5 +1,7 @@
-import StaggeredMenu from "@/components/StaggeredMenu";
+"use client";
 
+import StaggeredMenu from "@/components/StaggeredMenu";
+import type { ReactNode } from "react";
 
 const menuItems = [
   { label: "Home", ariaLabel: "Go to home page", link: "/home/dashboard" },
@@ -14,7 +16,7 @@ const socialItems = [
   { label: "LinkedIn", link: "https://linkedin.com" },
 ];
 
-export default function page(){
+export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen bg-[#1a1a1a]">
       <StaggeredMenu
@@ -32,7 +34,9 @@ export default function page(){
         isFixed={true}
       />
 
-   
+    <main className="pr-20">
+        {children}
+      </main>
     </div>
   );
 }

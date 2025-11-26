@@ -28,7 +28,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
-, "src/app/sign-up/login_test_page"  ],
+    "**/*.mts"],
   "exclude": ["node_modules"]
 }
