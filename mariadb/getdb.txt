@@ -12,28 +12,38 @@ CREATE TABLE company_address (
     street VARCHAR(150),
     house_number VARCHAR(20),
     zip VARCHAR(10),
-    city VARCHAR(100)
+    city VARCHAR(100),
+    tel VARCHAR(30)
 );
 
 CREATE TABLE company (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    steuer_nr VARCHAR(150) NOT NULL,
+    uid VARCHAR(150) NOT NULL,
+    iban VARCHAR(150) NOT NULL,
     address_id INT,
-    owner_id INT,
-    FOREIGN KEY (address_id) REFERENCES company_address(id),
-    FOREIGN KEY (owner_id) REFERENCES konto(id)
+    FOREIGN KEY (address_id) REFERENCES company_address(id)
 );
 
-CREATE TABLE customer ( // anpassen 
+CREATE TABLE customer_address (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    company_id INT NOT NULL,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
+    street VARCHAR(150),
+    house_number VARCHAR(20),
+    zip VARCHAR(10),
+    city VARCHAR(100),
+    tel VARCHAR(30)
+);
+
+CREATE TABLE customer (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150),
     email VARCHAR(150),
     address_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (company_id) REFERENCES company(id),
-    FOREIGN KEY (address_id) REFERENCES company_address(id)
+    FOREIGN KEY (address_id) REFERENCES customer_address(id)
 );
 
 CREATE TABLE bill (

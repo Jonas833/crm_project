@@ -3,7 +3,7 @@ import json
 from fastapi import HTTPException
 from .schemas import SignupRequest, SigninRequest
 from .hash import hash_password,verify_password, create_access_token
-from .models import CompanyAddress
+from .models import CompanyAddress, Company, Termin
 
 
 
@@ -120,6 +120,85 @@ def create_company_address(data: CompanyAddress):
         new_CompanyAddress = cursor.lastrowid
 
         return {"status": "created", "CompanyAdress": new_CompanyAddress}
+    
+    except mariadb.Error:
+        raise HTTPException(status_code=500, detail="Database error")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+def create_company(data: Company):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            """
+            INSERT INTO company(street, house_number, zip, city)
+            VALUES (?, ?, ?, ?)
+            """,
+            (data.street, data.house_number, data.zip,data.city)
+        )
+
+        conn.commit()
+        new_CompanyAddress = cursor.lastrowid
+
+        return {"status": "created", "CompanyAdress": new_CompanyAddress}
+    
+    except mariadb.Error:
+        raise HTTPException(status_code=500, detail="Database error")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+def create_termin(data: Termin):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+
+    try:
+        cursor.execute(
+            """
+            INSERT INTO termin(customer_id, date, note)
+            VALUES (?, ?, ?)
+            """,
+            (data.customer_id, data.date, data.note)
+        )
+
+        conn.commit()
+        new_Termin = cursor.lastrowid
+
+        return {"status": "created", "Termin": new_Termin}
+    
+    except mariadb.Error:
+        raise HTTPException(status_code=500, detail="Database error")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_customer():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+
+    try:
+        cursor.execute(
+            """
+            SELECT name FROM customer 
+            WHERE name IS NOT NULL 
+            ORDER BY name
+            """,
+        )
+        rows = cursor.fetchall()
+
+        return [
+            {"id": row[0], "name": row[1]}
+            for row in rows
+        ]
     
     except mariadb.Error:
         raise HTTPException(status_code=500, detail="Database error")
