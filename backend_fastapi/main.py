@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from .schemas import SignupRequest, SigninRequest
-from .models import CompanyAddress, Company, Termin
+from .models import CompanyAddress, Company, Termin, Customer, Customer_Address
 from .database_fastapi import signup as signup_db , signin as signin_db
-from .database_fastapi import create_company_address, create_company, create_termin, get_customer
-
+from .database_fastapi import create_company_address, create_company, create_termin, get_customers, get_customer, add_customer
+from .database_fastapi import add_customer_address
 
 app = FastAPI()
 
@@ -31,6 +31,15 @@ async def post_termin(termin_data:Termin):
     result = create_termin(termin_data)
     return result 
 
+@app.get("/get_customers")
+async def read_items():
+    result = get_customers()
+
+    if not result:
+        raise HTTPException(status_code=404,detail =f"no customer found")
+    
+    return result 
+
 @app.get("/get_customer")
 async def read_items():
     result = get_customer()
@@ -38,4 +47,14 @@ async def read_items():
     if not result:
         raise HTTPException(status_code=404,detail =f"no customer found")
     
+    return result 
+
+@app.post("/add_customer")
+async def post_customer(customer_data:Customer):
+    result = add_customer(customer_data)
+    return result 
+
+@app.post("/add_customer_address")
+async def post_customer_address(customer_address_data:Customer_Address):
+    result = add_customer_address(customer_address_data)
     return result 

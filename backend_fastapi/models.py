@@ -26,10 +26,10 @@ class Company(BaseModel):
 class Customer(BaseModel):
     name: str
     email: str
-    address_id: int
+    address_id: int = None
     created_at: Optional[datetime] = None
 
-class customer_address (BaseModel):
+class Customer_Address (BaseModel):
     street: str
     house_number: str
     zip: str
