@@ -1,7 +1,7 @@
 import mariadb
 import json
 from fastapi import HTTPException
-from .schemas import SignupRequest, SigninRequest
+from .schemas import SignupRequest, SigninRequest,NewCustomer,Customer_Address
 from .hash import hash_password,verify_password, create_access_token
 from .models import CompanyAddress, Company, Termin, Customer
 
@@ -208,25 +208,28 @@ def get_customers():
         conn.close()
 
 
-def get_customer():
+def get_customer(customer_id: int):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-
     try:
         cursor.execute(
-            """
-            SELECT * FROM customer 
-            WHERE id  
-            """,
+            "SELECT * FROM customer WHERE id = ?",
+            (customer_id,)
         )
-        rows = cursor.fetchall()
+        row = cursor.fetchone()
 
-        return [
-            {"id": row[0], "name": row[1]}
-            for row in rows
-        ]
-    
+        if not row:
+            return None
+
+        return {
+            "id": row[0],
+            "name": row[1],
+            "email": row[2],
+            "address_id": row[3],
+            "created_at": row[4]
+        }
+
     except mariadb.Error:
         raise HTTPException(status_code=500, detail="Database error")
 
@@ -235,12 +238,14 @@ def get_customer():
         conn.close()
 
 
-def add_customer(data: Customer):
+#idee notiz feld für kunden 
+#idd boolean private kunde oder unternhemn // jenachdme andere icons im ui
+
+'''def add_customer(data: Customer):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    #idee notiz feld für kunden 
-    #idd boolean private kunde oder unternhemn // jenachdme andere icons im ui
+    
     try:
         cursor.execute(
             """
@@ -284,6 +289,54 @@ def add_customer_address(data: CompanyAddress):
     
     except mariadb.Error:
         raise HTTPException(status_code=500, detail="Database error")
+
+    finally:
+        cursor.close()
+        conn.close()
+'''
+
+def add_customer_with_address(data: NewCustomer):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # 1️⃣ Adresse anlegen
+        cursor.execute(
+            """
+            INSERT INTO customer_address (street, house_number, zip, city, tel)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (
+                data.address.street,
+                data.address.house_number,
+                data.address.zip,
+                data.address.city,
+                data.address.tel
+            )
+        )
+        address_id = cursor.lastrowid
+
+        # 2️⃣ Customer anlegen mit address_id
+        cursor.execute(
+            """
+            INSERT INTO customer (name, email, address_id)
+            VALUES (?, ?, ?)
+            """,
+            (data.name, data.email, address_id)
+        )
+        customer_id = cursor.lastrowid
+
+        conn.commit()
+
+        return {
+            "status": "created",
+            "customer_id": customer_id,
+            "address_id": address_id
+        }
+
+    except mariadb.Error as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"DB error: {str(e)}")
 
     finally:
         cursor.close()

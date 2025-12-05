@@ -8,3 +8,16 @@ class SignupRequest(BaseModel):
 class SigninRequest(BaseModel):
     username: str
     password: str
+
+
+class Customer_Address (BaseModel):
+    street: str
+    house_number: str
+    zip: str
+    city: str
+    tel: str
+
+class NewCustomer(BaseModel):
+    name: str
+    email: str
+    address: Customer_Address

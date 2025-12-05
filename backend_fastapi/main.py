@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from .schemas import SignupRequest, SigninRequest
-from .models import CompanyAddress, Company, Termin, Customer, Customer_Address
+from .schemas import NewCustomer, Customer_Address
+from .models import CompanyAddress, Company, Termin, Customer
 from .database_fastapi import signup as signup_db , signin as signin_db
-from .database_fastapi import create_company_address, create_company, create_termin, get_customers, get_customer, add_customer
-from .database_fastapi import add_customer_address
+from .database_fastapi import create_company_address, create_company, create_termin, get_customers, get_customer
+from .database_fastapi import add_customer_with_address
 
 app = FastAPI()
 
@@ -40,21 +41,26 @@ async def read_items():
     
     return result 
 
-@app.get("/get_customer")
-async def read_items():
-    result = get_customer()
+@app.get("/customer/get{customer_id}")
+async def read_customer(customer_id: int):
+    result = get_customer(customer_id)
 
     if not result:
-        raise HTTPException(status_code=404,detail =f"no customer found")
+        raise HTTPException(status_code=404, detail="Customer not found")
     
-    return result 
+    return result
 
-@app.post("/add_customer")
-async def post_customer(customer_data:Customer):
-    result = add_customer(customer_data)
-    return result 
 
-@app.post("/add_customer_address")
-async def post_customer_address(customer_address_data:Customer_Address):
-    result = add_customer_address(customer_address_data)
-    return result 
+#@app.post("/add_customer")
+#async def post_customer(customer_data:Customer):
+ #   result = add_customer(customer_data)
+  #  return result 
+#
+#@app.post("/add_customer_address")
+#async def post_customer_address(customer_address_data:Customer_Address):
+ #   result = add_customer_address(customer_address_data)
+  #  return result 
+
+@app.post("/customer/post")
+async def create_customer(data: NewCustomer):
+    return add_customer_with_address(data)
