@@ -161,10 +161,10 @@ def create_termin(data: Termin):
     try:
         cursor.execute(
             """
-            INSERT INTO termin(customer_id, date, note)
-            VALUES (?, ?, ?)
+            INSERT INTO termin(customer_id,konto_id,date, note)
+            VALUES (%s, %s, %s, %s)
             """,
-            (data.customer_id, data.date, data.note)
+            (data.customer_id, data.konto_id, data.date, data.note)
         )
 
         conn.commit()
@@ -316,7 +316,7 @@ def add_customer_with_address(data: NewCustomer):
         )
         address_id = cursor.lastrowid
 
-        # 2️⃣ Customer anlegen mit address_id
+        #  Customer anlegen mit address_id
         cursor.execute(
             """
             INSERT INTO customer (name, email, address_id)
@@ -341,3 +341,37 @@ def add_customer_with_address(data: NewCustomer):
     finally:
         cursor.close()
         conn.close()
+
+
+def get_termin(konto_id: int):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "SELECT customer_id, konto_id, date, note FROM termin WHERE id = ?",
+            (konto_id,)
+        )
+        row = cursor.fetchone()
+
+        if not row:
+            return None
+
+        return {
+            "customer_id": row[0],
+            "konto_id": row[1],
+            "date": row[2],
+            "note": row[3],
+            
+
+        
+        }
+
+    except mariadb.Error:
+        raise HTTPException(status_code=500, detail="Database error")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+        
