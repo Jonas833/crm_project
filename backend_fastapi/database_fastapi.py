@@ -349,7 +349,7 @@ def get_termin(konto_id: int):
 
     try:
         cursor.execute(
-            "SELECT customer_id, konto_id, date, note FROM termin WHERE id = ?",
+            "SELECT customer_id, konto_id, date_start, date_end, note FROM termin WHERE id = ?",
             (konto_id,)
         )
         row = cursor.fetchone()
@@ -360,11 +360,9 @@ def get_termin(konto_id: int):
         return {
             "customer_id": row[0],
             "konto_id": row[1],
-            "date": row[2],
-            "note": row[3],
-            
-
-        
+            "date_start": row[2],
+            "date_end": row[3],
+            "note": row[4]
         }
 
     except mariadb.Error:
@@ -374,4 +372,3 @@ def get_termin(konto_id: int):
         cursor.close()
         conn.close()
 
-        
