@@ -52,7 +52,8 @@ class BillItem(BaseModel):
 class Termin(BaseModel):
     customer_id: int
     konto_id: int
-    date: date
+    date_start: date
+    date_end: date
     note: Optional[str] = None
     created_at: Optional[datetime] = None
 

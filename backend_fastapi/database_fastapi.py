@@ -161,10 +161,10 @@ def create_termin(data: Termin):
     try:
         cursor.execute(
             """
-            INSERT INTO termin(customer_id,konto_id,date, note)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO termin(customer_id,konto_id,date_start,date_end, note)
+            VALUES (%s, %s, %s,%s, %s)
             """,
-            (data.customer_id, data.konto_id, data.date, data.note)
+            (data.customer_id, data.konto_id, data.date_start,data.date_end, data.note)
         )
 
         conn.commit()
