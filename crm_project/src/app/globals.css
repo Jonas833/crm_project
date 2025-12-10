@@ -139,4 +139,51 @@
   .animate-star-movement-top {
     animation: star-movement-top linear infinite alternate;
   }
+
+  /* ===== Light Theme ===== */
+  html[data-theme="light"] {
+    --bg: #ffffff;
+    --text: #0b3d0b; /* sehr dunkles Grün für Text */
+    --text-muted: #2f5f2f;
+    --text-hover: #0b3d0b;
+    --navbar-bg: #1f8f1f;        /* kräftiges Grün */
+    --navbar-border: #176a17;
+    --accent: #0b3d0b;
+  }
+  
+
+/* ===== Dark Theme ===== */
+html[data-theme="dark"] {
+  --bg: #0a0f0a; /* tiefdunkles Grün-Schwarz */
+  --text: #e3ffe3; /* sehr hellgrünlicher Text */
+  --text-muted: #9edc9e;
+  --text-hover: #ffffff;
+
+  --navbar-bg: #0f3a0f;      /* dunkles Grün */
+  --navbar-border: #0b2a0b;
+  --accent: #4dff4d;         /* Neon-Grün */
+}
+
+
+/* ===== Colorblind Theme ===== */
+
+html[data-theme="colorblind"] {
+  --bg: #ffffff;
+  --text: #000000;
+  --text-muted: #222222;
+  --text-hover: #000000;
+
+  --navbar-bg: #005bbb;        /* hohes Kontrastblau */
+  --navbar-border: #003f7f;
+  --accent: #ffb400;           /* gelb/orange – für Farbenblindheit gut sichtbar */
+}
+
+
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.2s, color 0.2s;
+  }
+  
 }

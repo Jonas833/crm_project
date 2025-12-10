@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from .schemas import SignupRequest, SigninRequest
 from .schemas import NewCustomer, Customer_Address
 from .models import CompanyAddress, Company, Termin, Customer
@@ -7,6 +8,14 @@ from .database_fastapi import create_company_address, create_company, create_ter
 from .database_fastapi import add_customer_with_address, get_termin
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],       
+    allow_credentials=True,
+    allow_methods=["*"],       
+    allow_headers=["*"],
+)
 
 @app.post("/signup")
 async def post_konto(konto_data: SignupRequest):

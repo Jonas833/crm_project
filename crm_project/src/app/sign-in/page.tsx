@@ -1,74 +1,35 @@
-import Particles from '@/components/Particles';
-import GlobalClickSpark from "@/components/GlobalClickSpark";
-import StarBorder from '@/components/StarBorder'
-  
- 
-export default function Page() {
+"use client";
+import { useState } from "react";
+import { apiPost } from "@/lib/api_helper";
+import { useRouter } from "next/navigation";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [username, setUser] = useState("");
+  const [password, setPw] = useState("");
+  const [error, setError] = useState("");
+
+  async function handleLogin(e: any) {
+    e.preventDefault();
+    try {
+      const res = await apiPost("/signin", { username, password });
+      localStorage.setItem("token", res.access_token);
+      router.push("/home");
+    } catch {
+      setError("Login fehlgeschlagen");
+    }
+  }
+
   return (
-    <div
-      style={{
-        backgroundColor: "black",
-        width: "100%",
-        height: "100vh",
-        position: "relative",
-        overflow: "hidden"
-      }}
-    >
-      <Particles
-        particleColors={["#ffffff", "#ffffff"]}
-        particleCount={200}
-        particleSpread={10}
-        speed={0.1}
-        particleBaseSize={100}
-        moveParticlesOnHover={true}
-        alphaParticles={false}
-        disableRotation={false}
-      />
-
-     
-      <form
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          zIndex: 10,                    
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-          padding: "20px",
-          background: "rgba(33, 29, 33, 0.6)",
-          borderRadius: "20px"
-        }}
-      >
-        <input  type="text" placeholder="Username"
-        style={{
-          border: "2px solid white",
-          padding: "10px",
-          borderRadius: "17px",
-          background: "rgba(0, 0, 0, 0.18)",
-          color: "white",
-          outline: "none"
-        }}
-        />
-        <p></p>
-        <input type="Password" placeholder="Password"
-        style={{
-          border: "2px solid white",
-          padding: "10px",
-          borderRadius: "17px",
-          background: "black",
-          color: "white",
-          outline: "none"
-        }}
-        />
-
-        <StarBorder as="button" className="black" color="magenta" speed="5s">
-          Login
-        </StarBorder>
+    <div>
+      <h1>Login Employee</h1>
+      <form onSubmit={handleLogin}>
+        <input value={username} onChange={e => setUser(e.target.value)} placeholder="Username" />
+        <input type="password" value={password} onChange={e => setPw(e.target.value)} placeholder="Password" />
+        <button type="submit">Login</button>
       </form>
-      
+      <p style={{ color: "red" }}>{error}</p>
+      <a href="/signup">Signup Company →</a>
     </div>
   );
 }
-
