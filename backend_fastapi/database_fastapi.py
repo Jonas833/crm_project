@@ -1,5 +1,6 @@
 import mariadb
 import json
+from fastapi.responses import JSONResponse
 from fastapi import HTTPException
 from .schemas import SignupRequest, SigninRequest,NewCustomer,Customer_Address
 from .hash import hash_password,verify_password, create_access_token
@@ -89,12 +90,14 @@ def signin(data: SigninRequest):
         # 3. JWT erzeugen
         token = create_access_token(username=username)
 
-        return {
+        
+
+        return JSONResponse({
             "access_token": token,
             "token_type": "bearer",
             "user_id": user_id,
             "username": username
-        }
+        })
 
     except mariadb.Error:
         raise HTTPException(status_code=500, detail="Database error")
