@@ -13,7 +13,13 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const res = await apiPost("/signin", { username, password });
+
+      console.log("API RESPONSE:", res);
+      console.log("TOKEN:", res?.access_token);
+
       localStorage.setItem("token", res.access_token);
+
+      console.log("STORED TOKEN:", localStorage.getItem("token"));
       router.push("/home");
     } catch {
       setError("Login fehlgeschlagen");

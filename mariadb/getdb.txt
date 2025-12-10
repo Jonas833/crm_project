@@ -42,7 +42,6 @@ CREATE TABLE customer (
     email VARCHAR(150),
     address_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (company_id) REFERENCES company(id),
     FOREIGN KEY (address_id) REFERENCES customer_address(id)
 );
 
