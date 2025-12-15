@@ -352,7 +352,7 @@ def get_termin(konto_id: int):
 
     try:
         cursor.execute(
-            "SELECT customer_id, konto_id, date_start, date_end, note FROM termin WHERE id = ?",
+            "SELECT customer_id, konto_id, date_start, date_end, note FROM termin WHERE konto_id = ?",
             (konto_id,)
         )
         row = cursor.fetchone()
