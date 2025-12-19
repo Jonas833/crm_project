@@ -2,10 +2,11 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .schemas import SignupRequest, SigninRequest
 from .schemas import NewCustomer, Customer_Address
-from .models import CompanyAddress, Company, Termin, Customer
+from .models import CompanyAddress, Company, Termin
 from .database_fastapi import signup as signup_db , signin as signin_db
 from .database_fastapi import create_company_address, create_company, create_termin, get_customers, get_customer
 from .database_fastapi import add_customer_with_address, get_termin
+from .crud.bill import post_bill, get_bill, post_bill_item, get_bill_item
 
 app = FastAPI()
 
@@ -87,3 +88,35 @@ async def read_termin(konto_id: int):
         raise HTTPException(status_code=404, detail="Customer not found")
     
     return result
+
+@app.get("/bill/get{customer_id}")
+async def read_bill(customer_id: int):
+    result= get_bill(customer_id)
+
+    if not result:
+        raise HTTPException(status_code=404, detail="bill not found")
+    
+
+@app.get("/bill_item/get{bill_id}")
+async def read_bill_item(bill_id: int):
+    result= get_bill_item(bill_id)
+
+    if not result:
+        raise HTTPException(status_code=404, detail="bill item not found")
+    
+
+@app.post("/bill/post")
+async def bill_post():
+    result= post_bill()
+
+    if not result:
+        raise HTTPException(status_code=404, detail="bill not created")
+    
+
+
+app.post("/bill_item/post")
+async def bill_item_post():
+    result= post_bill_item()
+
+    if not result:
+        raise HTTPException(status_code=404, detail="bill not created")

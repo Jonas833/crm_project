@@ -2,11 +2,11 @@ import mariadb
 import json
 from fastapi.responses import JSONResponse
 from fastapi import HTTPException
-from models import Bill, BillItem
-from database_connection import get_db_connection
+from ..models import Bill, BillItem
+from ..database_connection import get_db_connection
 
 
-def post_Bill(data: Bill):
+def post_bill(data: Bill):
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -33,17 +33,18 @@ def post_Bill(data: Bill):
 
 
 
-def get_Bill(data: Bill):
+def get_bill(customer_id: int):
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
         cursor.execute(
             """
-            select * from  bill where customer_id = ?
-            VALUES (?)
+            SELECT id, customer_id, total_value, created_at 
+            FROM bill 
+            WHERE customer_id = %s
             """,
-            (data.customer_id,data.total_value)
+            (customer_id,) 
         )
 
         rows = cursor.fetchall()
@@ -53,11 +54,10 @@ def get_Bill(data: Bill):
              "customer_id": row[1],
              "total_value": row [2],
              "created_at": row[3]
-             
-             
-             }
+            }
             for row in rows
         ]
+    
     except mariadb.Error:
         raise HTTPException(status_code=500, detail="Database error")
 
@@ -68,7 +68,7 @@ def get_Bill(data: Bill):
 
 
 #admin funktion
-def post_Bill_Item(data: BillItem):
+def post_bill_item(data: BillItem):
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -96,27 +96,29 @@ def post_Bill_Item(data: BillItem):
 
 
 
-def get_Bill_item(data: BillItem):
+def get_bill_item(bill_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
         cursor.execute(
             """
-            select * from  bill where bill_id = ?
-            VALUES (?)
+            SELECT id, bill_id, description, price, quantity
+            FROM bill_item
+            WHERE bill_id = %s
             """,
-            (data.customer_id,data.total_value)
+            (bill_id,) 
         )
 
         rows = cursor.fetchall()
 
+        
         return [
             {"id": row[0], 
              "bill_id": row[1],
-             "quantiy": row [2],
+             "description": row [2],
              "price": row[3],
-             "description": row [4]
+             "quantity": row [4]
              
              
              }
