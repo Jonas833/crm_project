@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, date
-from typing import Literal, Optional
+from typing import Literal, Optional, List
 
 #class Konto(BaseModel):
    # email: EmailStr
@@ -57,3 +57,6 @@ class Termin(BaseModel):
     note: Optional[str] = None
     created_at: Optional[datetime] = None
 
+class BillCreateRequest(BaseModel):
+    customer_id: int
+    item_ids: List[int]

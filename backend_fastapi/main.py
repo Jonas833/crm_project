@@ -1,14 +1,18 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from .schemas import SignupRequest, SigninRequest
 from .schemas import NewCustomer, Customer_Address
-from .models import CompanyAddress, Company, Termin
+from .models import CompanyAddress, Company, Termin, Bill, BillItem, BillCreateRequest
 from .database_fastapi import signup as signup_db , signin as signin_db
 from .database_fastapi import create_company_address, create_company, create_termin, get_customers, get_customer
 from .database_fastapi import add_customer_with_address, get_termin
-from .crud.bill import post_bill, get_bill, post_bill_item, get_bill_item
+from .crud.bill import post_bill, get_bill, post_bill_item, get_bill_item, create_bill_from_items, get_templates 
+from .pdf_service import generate_bill_pdf
 
 app = FastAPI()
+
+app.mount("/pdf", StaticFiles(directory="pdf"), name="pdf")
 
 app.add_middleware(
     CORSMiddleware,
@@ -96,6 +100,7 @@ async def read_bill(customer_id: int):
     if not result:
         raise HTTPException(status_code=404, detail="bill not found")
     
+    return result
 
 @app.get("/bill_item/get{bill_id}")
 async def read_bill_item(bill_id: int):
@@ -104,19 +109,43 @@ async def read_bill_item(bill_id: int):
     if not result:
         raise HTTPException(status_code=404, detail="bill item not found")
     
+    return result     
 
 @app.post("/bill/post")
-async def bill_post():
-    result= post_bill()
+async def bill_post(bill_data:Bill):
+    result= post_bill(bill_data)
 
     if not result:
         raise HTTPException(status_code=404, detail="bill not created")
     
+    return result
 
 
-app.post("/bill_item/post")
-async def bill_item_post():
-    result= post_bill_item()
+@app.post("/bill_item/post")
+async def bill_item_post(bill_item_data:BillItem):
+    result= post_bill_item(bill_item_data)
 
     if not result:
-        raise HTTPException(status_code=404, detail="bill not created")
+        raise HTTPException(status_code=404, detail="bill item not created")
+    
+    return result
+
+@app.post("/bill/create-from-items")
+def create_bill(data: BillCreateRequest):
+    bill_id = create_bill_from_items(data)
+    pdf_path = generate_bill_pdf(bill_id)
+
+    return {
+        "bill_id": bill_id,
+        "pdf_path": pdf_path
+    }
+
+
+@app.get("/bill_templates/get")
+async def read_bill_templates():
+    result= get_templates()
+
+    if not result:
+        raise HTTPException(status_code=404, detail="bill item not found")
+    
+    return result     

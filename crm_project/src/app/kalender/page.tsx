@@ -56,12 +56,12 @@ export default function CalendarPage() {
       setLoading(true);
       setError("");
       try {
-        // Dein Backend-Endpunkt: z.B. /termin/get1
+        //  Backend-Endpunkt:/termin/get1
         const data = await apiGet(`/termin/get${kontoId}`);
 
         if (cancelled) return;
 
-        // Falls nur ein Termin-Objekt zurückkommt → in Array packen
+        // Falls nur ein Termin-Objekt zurückkommt  in Array packen
         const list = Array.isArray(data) ? data : data ? [data] : [];
 
         const mapped: CalendarEvent[] = list.map((t: any, index: number) => {
